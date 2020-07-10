@@ -1,38 +1,34 @@
-type ResultType = string
-
-interface input {
-    value1: number;
-    value2: number;
-}
-
-let finalBmi: number = null
-
-const calculateBMI = (a: number, b: number) : ResultType => {
-   
-
-    if ((a > 0) && (b > 0)){
-        const weight : number = a
-        const height : number = b
-
-        finalBmi = (weight / (height * height) * 100)
-        console.log(finalBmi)
-        
-    } else {
-        throw new Error("Provided values are not BMI compatible")
+export const calculateBmi = (height: number, weight: number): string => {
+    const height_in_metres: number = height / 100;
+    const bmi: number = weight / (Math.pow(height_in_metres, 2));
+    if (bmi < 18.5) {
+      return 'Underweight';
     }
-
-    if (finalBmi < 18.5){
-        return "You are under weight"
-    } else if (finalBmi > 18.5 && finalBmi < 25){
-        return "You are in a healthy weight range"
-    } else if (finalBmi > 25){
-        return "You are overweight"
-    } else {
-        throw new Error("Please provide correct BMI values")
+    else if (bmi >= 18.5 && bmi <= 24.9) {
+      return 'Normal (healthy weight)';
     }
-}
-
-const a: number = Number(process.argv[2])
-const b: number = Number(process.argv[3])
-
-console.log(calculateBMI(a, b))
+    else if (bmi >= 25 && bmi <= 29.9) {
+      return 'Overweight';
+    }
+    else /*if (bmi >= 30)*/ {
+      return 'Obese';
+    }
+  };
+  
+  // Calculate BMI using command line args if the script was called directly
+  if (require.main === module) {
+  
+    // Sanity Check Input
+    const args: Array<string> = process.argv;
+    if (args.length != 4) {
+      throw new Error('Incorrect number of arguments');
+    }
+    const height = Number(args[2]);
+    const weight = Number(args[3]);
+    if (isNaN(height) || isNaN(weight)) {
+      throw new Error('Height and Weight must be numbers');
+    }
+  
+    // Do the BMI Calculation
+    console.log(calculateBmi(height, weight));
+  }
